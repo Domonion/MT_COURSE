@@ -18,10 +18,5 @@ namespace Parser
             Type = type;
             Value = value;
         }
-
-        public override string ToString()
-        {
-            return Value.ToString();
-        }
     }
 }

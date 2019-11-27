@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
 
@@ -13,19 +11,21 @@ namespace Parser
         }
     }
 
-    public interface ILexer<TToken> : IEnumerable<TToken>, IEnumerator<TToken> where TToken : IToken
+    public interface ILexer
     {
         int Pos { get; }
+        IToken Current { get; }
+        void MoveNext();
     }
 
-    public class MyLexer : ILexer<MyToken>
+    public class MyLexer : ILexer
     {
-        [NotNull] private readonly StreamReader myInput;
+        [NotNull] private readonly TextReader myInput;
         private Type myType;
         private char myChar;
         public int Pos { get; private set; }
 
-        public MyLexer([NotNull] StreamReader input)
+        public MyLexer([NotNull] TextReader input)
         {
             myInput = input;
             MoveNext();
@@ -38,29 +38,17 @@ namespace Parser
             {
                 return '$';
             }
+
             return (char) last;
         }
 
-        public void Dispose()
+        public void MoveNext()
         {
-            myInput.Dispose();
-        }
+            if (myChar != '$')
+            {
+                ++Pos;
+            }
 
-        public IEnumerator<MyToken> GetEnumerator()
-        {
-            return this;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this;
-        }
-
-        public bool MoveNext()
-        {
-            if (myChar == '$')
-                return false;
-            ++Pos;
             myChar = GetChar();
             switch (myChar)
             {
@@ -94,16 +82,8 @@ namespace Parser
 
                     throw new ParseException(myChar);
             }
-
-            return true;
         }
 
-        public void Reset()
-        {
-        }
-
-        public MyToken Current => new MyToken(myType, myChar);
-
-        object IEnumerator.Current => Current;
+        public IToken Current => new MyToken(myType, myChar);
     }
 }
