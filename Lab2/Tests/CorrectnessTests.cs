@@ -1,10 +1,9 @@
 ﻿using NUnit.Framework;
+using Parser.AST;
 using static Tests.Util;
 
 namespace Tests
 {
-    //TODO 4. somehow test structure - with direct build and vizualize
-    //TODO 5. vizualize - string polskaya notation!
     [TestFixture]
     public class CorrectnessTests
     {
