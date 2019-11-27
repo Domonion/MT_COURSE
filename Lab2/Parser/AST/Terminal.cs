@@ -3,15 +3,13 @@ namespace Parser.AST
     public class Terminal : ITreeNode
     {
         public readonly IToken Token;
-        public char Level { get; }
-        public string GetInternalRepresentation()
+        public MegaVizualizer GetInternalRepresentation()
         {
-            return Level.ToString();
+            return new MegaVizualizer(Token.Value.ToString());
         }
 
-        public Terminal(IToken token, char level)
+        public Terminal(IToken token)
         {
-            Level = level;
             Token = token;
         }
 

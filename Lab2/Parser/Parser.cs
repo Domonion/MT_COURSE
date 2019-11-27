@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using Parser.AST;
 
@@ -14,12 +13,11 @@ namespace Parser
 
     public interface IParser
     {
-        ITreeNode Parse();
     }
 
     public class Parser : IParser
     {
-        [NotNull] private ILexer myLexer;
+        [NotNull] private readonly ILexer myLexer;
 
         public Parser(ILexer lexer)
         {
@@ -33,24 +31,22 @@ namespace Parser
             {
                 case Type.NOT:
                 {
-                    List<ITreeNode> list = new List<ITreeNode>();
-                    list.Add(new Terminal(now, 'C'));
+                    var list = new List<ITreeNode> {new Terminal(now)};
                     myLexer.MoveNext();
                     list.Add(C());
                     return new Rule(list, 'C');
                 }
                 case Type.LPAREN:
                 {
-                    List<ITreeNode> list = new List<ITreeNode>();
-                    list.Add(new Terminal(now, 'C'));
+                    var list = new List<ITreeNode> {new Terminal(now)};
                     myLexer.MoveNext();
                     list.Add(S());
-                    list.Add(new Terminal(myLexer.Current, 'C'));
+                    list.Add(new Terminal(myLexer.Current));
                     myLexer.MoveNext();
                     return new Rule(list, 'C');
                 }
                 case Type.VAR:
-                    var res = new Terminal(now, 'C');
+                    var res = new Terminal(now);
                     myLexer.MoveNext();
                     return res;
                 default:
@@ -58,17 +54,17 @@ namespace Parser
             }
         }
 
-        private ITreeNode B_SHTRIH()
+        private ITreeNode D()
         {
             var now = myLexer.Current;
             switch (now.Type)
             {
                 case Type.AND:
                     var list = new List<ITreeNode>();
-                    list.Add(new Terminal(now, 'b'));
+                    list.Add(new Terminal(now));
                     myLexer.MoveNext();
                     list.Add(B());
-                    return new Rule(list, 'b');
+                    return new Rule(list, 'D');
                 case Type.OR:
                 case Type.RPAREN:
                 case Type.XOR:
@@ -89,24 +85,24 @@ namespace Parser
                 case Type.VAR:
                     var list = new List<ITreeNode>();
                     list.Add(C());
-                    list.Add(B_SHTRIH());
+                    list.Add(D());
                     return new Rule(list, 'B');
                 default:
                     throw new ParseException(myLexer.Pos);
             }
         }
 
-        private ITreeNode A_SHTRIH()
+        private ITreeNode E()
         {
             var now = myLexer.Current;
             switch (now.Type)
             {
                 case Type.OR:
                     var list = new List<ITreeNode>();
-                    list.Add(new Terminal(now, 'a'));
+                    list.Add(new Terminal(now));
                     myLexer.MoveNext();
                     list.Add(A());
-                    return new Rule(list, 'a');
+                    return new Rule(list, 'E');
                 case Type.RPAREN:
                 case Type.XOR:
                 case Type.END:
@@ -126,24 +122,24 @@ namespace Parser
                 case Type.VAR:
                     var list = new List<ITreeNode>();
                     list.Add(B());
-                    list.Add(A_SHTRIH());
+                    list.Add(E());
                     return new Rule(list, 'A');
                 default:
                     throw new ParseException(myLexer.Pos);
             }
         }
 
-        private ITreeNode S_SHTRIH()
+        private ITreeNode F()
         {
             var now = myLexer.Current;
             switch (now.Type)
             {
                 case Type.XOR:
                     var list = new List<ITreeNode>();
-                    list.Add(new Terminal(now, 's'));
+                    list.Add(new Terminal(now));
                     myLexer.MoveNext();
                     list.Add(S());
-                    return new Rule(list, 's');
+                    return new Rule(list, 'F');
                 case Type.RPAREN:
                 case Type.END:
                     return null;
@@ -162,7 +158,7 @@ namespace Parser
                 case Type.VAR:
                     var list = new List<ITreeNode>();
                     list.Add(A());
-                    list.Add(S_SHTRIH());
+                    list.Add(F());
                     return new Rule(list, 'S');
                 default:
                     throw new ParseException(myLexer.Pos);

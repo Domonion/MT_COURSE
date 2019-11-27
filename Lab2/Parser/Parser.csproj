@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AST\ITreeNode.cs" />
+    <Compile Include="AST\MegaVizualizer.cs" />
     <Compile Include="AST\Rule.cs" />
     <Compile Include="AST\Terminal.cs" />
     <Compile Include="Parser.cs" />

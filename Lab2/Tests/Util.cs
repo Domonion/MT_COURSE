@@ -11,7 +11,8 @@ namespace Tests
         {
             var kek = new Parser.Parser(new MyLexer(new StringReader(input)));
             var now = kek.Parse();
-            Console.WriteLine(now.GetInternalRepresentation());
+            var str = now.GetInternalRepresentation();
+            Console.WriteLine(str);
             return now.ToString();
         }
 

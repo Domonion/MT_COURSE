@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -26,18 +25,15 @@ namespace Parser.AST
             return builder.ToString();
         }
 
-        public string GetInternalRepresentation()
+        public MegaVizualizer GetInternalRepresentation()
         {
-            var builder = new StringBuilder();
-            builder.Append("(");
-            builder.Append(Level);
+            var res = new MegaVizualizer(Level.ToString());
             foreach (var node in Descendants)
             {
-                builder.Append(node?.GetInternalRepresentation());
+                res.Add(node?.GetInternalRepresentation());
             }
 
-            builder.Append(")");
-            return builder.ToString();
+            return res;
         }
     }
 }
