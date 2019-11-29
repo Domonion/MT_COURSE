@@ -5,7 +5,7 @@ namespace Parser.AST
         public readonly IToken Token;
         public MegaVizualizer GetInternalRepresentation()
         {
-            return new MegaVizualizer(Token.Value.ToString());
+            return new MegaVizualizer(nameof(Terminal) + ": " + Token.Value);
         }
 
         public Terminal(IToken token)

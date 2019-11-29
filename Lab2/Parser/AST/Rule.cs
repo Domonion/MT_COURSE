@@ -5,12 +5,12 @@ namespace Parser.AST
 {
     public class Rule : ITreeNode
     {
-        public char Level { get; }
+        private readonly string myCreatedBy;
         public IEnumerable<ITreeNode> Descendants { get; }
 
-        public Rule(IEnumerable<ITreeNode> descendants, char level)
+        public Rule(IEnumerable<ITreeNode> descendants, string createdBy)
         {
-            Level = level;
+            myCreatedBy = createdBy;
             Descendants = descendants;
         }
 
@@ -27,7 +27,7 @@ namespace Parser.AST
 
         public MegaVizualizer GetInternalRepresentation()
         {
-            var res = new MegaVizualizer(Level.ToString());
+            var res = new MegaVizualizer(nameof(Rule) + ": " + myCreatedBy);
             foreach (var node in Descendants)
             {
                 res.Add(node?.GetInternalRepresentation());

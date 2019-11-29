@@ -34,7 +34,7 @@ namespace Parser
                     var list = new List<ITreeNode> {new Terminal(now)};
                     myLexer.MoveNext();
                     list.Add(C());
-                    return new Rule(list, 'C');
+                    return new Rule(list, nameof(C));
                 }
                 case Type.LPAREN:
                 {
@@ -43,12 +43,14 @@ namespace Parser
                     list.Add(S());
                     list.Add(new Terminal(myLexer.Current));
                     myLexer.MoveNext();
-                    return new Rule(list, 'C');
+                    return new Rule(list, nameof(C));
                 }
                 case Type.VAR:
-                    var res = new Terminal(now);
+                {
+                    var list = new List<ITreeNode> {new Terminal(now)};
                     myLexer.MoveNext();
-                    return res;
+                    return new Rule(list, nameof(C));
+                }
                 default:
                     throw new ParseException(myLexer.Pos);
             }
@@ -64,7 +66,7 @@ namespace Parser
                     list.Add(new Terminal(now));
                     myLexer.MoveNext();
                     list.Add(B());
-                    return new Rule(list, 'D');
+                    return new Rule(list, nameof(D));
                 case Type.OR:
                 case Type.RPAREN:
                 case Type.XOR:
@@ -86,7 +88,7 @@ namespace Parser
                     var list = new List<ITreeNode>();
                     list.Add(C());
                     list.Add(D());
-                    return new Rule(list, 'B');
+                    return new Rule(list, nameof(B));
                 default:
                     throw new ParseException(myLexer.Pos);
             }
@@ -102,7 +104,7 @@ namespace Parser
                     list.Add(new Terminal(now));
                     myLexer.MoveNext();
                     list.Add(A());
-                    return new Rule(list, 'E');
+                    return new Rule(list, nameof(E));
                 case Type.RPAREN:
                 case Type.XOR:
                 case Type.END:
@@ -123,7 +125,7 @@ namespace Parser
                     var list = new List<ITreeNode>();
                     list.Add(B());
                     list.Add(E());
-                    return new Rule(list, 'A');
+                    return new Rule(list, nameof(A));
                 default:
                     throw new ParseException(myLexer.Pos);
             }
@@ -139,7 +141,7 @@ namespace Parser
                     list.Add(new Terminal(now));
                     myLexer.MoveNext();
                     list.Add(S());
-                    return new Rule(list, 'F');
+                    return new Rule(list, nameof(F));
                 case Type.RPAREN:
                 case Type.END:
                     return null;
@@ -159,7 +161,7 @@ namespace Parser
                     var list = new List<ITreeNode>();
                     list.Add(A());
                     list.Add(F());
-                    return new Rule(list, 'S');
+                    return new Rule(list, nameof(S));
                 default:
                     throw new ParseException(myLexer.Pos);
             }

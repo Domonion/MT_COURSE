@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Parser.AST;
 using static Tests.Util;
 
 namespace Tests
@@ -137,19 +136,19 @@ namespace Tests
             Check("(a|b)&c");
         }
 
-//        [Test]
-//        public void TestAll1()
-//        {
-//            //some full test
-//            Check("A^B|C&(!D)");
-//        }
-//
-//        [Test]
-//        public void TestAll2()
-//        {
-//            //some full test
-//            Check("(!A)&B|C^D");
-//        }
+        [Test]
+        public void TestAll1()
+        {
+            //some full test
+            Check("A^B|C&(!D)");
+        }
+
+        [Test]
+        public void TestAll2()
+        {
+            //some full test
+            Check("(!A)&B|C^D");
+        }
 
         [Test]
         public void TestFailS()

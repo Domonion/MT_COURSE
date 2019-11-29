@@ -6,28 +6,28 @@ namespace Parser.AST
 {
     public class MegaVizualizer
     {
-        private string head;
-        List<MegaVizualizer> sons = new List<MegaVizualizer>();
+        private readonly string myHead;
+        private readonly List<MegaVizualizer> mySons = new List<MegaVizualizer>();
 
         public MegaVizualizer(string val)
         {
-            head = val;
+            myHead = val;
         }
 
         public void Add(MegaVizualizer vizualizer)
         {
-            sons.Add(vizualizer);
+            mySons.Add(vizualizer);
         }
 
-        private List<string> GetLines()
+        private IEnumerable<string> GetLines()
         {
-            var res = new List<string>();
-            res.Add(head);
-            var offset = new StringBuilder().Append(' ', head.Length + 2).ToString();
-            foreach (var son in sons)
+            var res = new List<string> {myHead};
+            var difference = myHead.Length + 3;
+            var offset = new StringBuilder().Append(' ', difference).ToString();
+            foreach (var son in mySons)
                 if (son != null)
                 {
-                    List<string> sonLines = son.GetLines();
+                    var sonLines = son.GetLines();
                     foreach (var line in sonLines)
                     {
                         res.Add(line.Insert(0, offset));
@@ -35,11 +35,11 @@ namespace Parser.AST
                 }
                 else
                 {
-                    res.Add(offset + ".");
+                    res.Add(offset + "none");
                 }
 
             for (var i = 1; i < res.Count; i++)
-                if (res[i].Length == head.Length + 3)
+                if (res[i].StartsWith(offset + "Rule") || res[i].StartsWith(offset + "Terminal") || res[i].StartsWith(offset + "none"))
                 {
                     for (var j = 1; j <= i; j++)
                     {
@@ -49,10 +49,11 @@ namespace Parser.AST
                     }
 
                     var kek = res[i].ToCharArray();
-                    for (var j = 1; j < head.Length + 2; j++)
+                    for (var j = 1; j < myHead.Length + 2; j++)
                     {
                         kek[j] = '-';
                     }
+
                     res[i] = new string(kek);
                 }
 
