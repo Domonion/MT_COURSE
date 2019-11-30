@@ -1,1 +1,12 @@
-.idea
+*.idea
+*.antlr
+*.jar
+*.exe
+*Debug
+*bin
+*.cache
+*packages
+*obj
+*.vs
+*Release
+*.pdb
