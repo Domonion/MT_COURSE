@@ -4,11 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1741BBE2-5087-434D-AFAA-04C4A1CF36D5}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{78CAF48B-11A6-40C0-8A82-1A9062EACD2A}</ProjectGuid>
+    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tex2Html</RootNamespace>
-    <AssemblyName>Tex2Html</AssemblyName>
+    <RootNamespace>Tests</RootNamespace>
+    <AssemblyName>Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,24 +33,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.Standard, Version=4.7.2.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f">
-      <HintPath>..\packages\Antlr4.Runtime.Standard.4.7.2\lib\net35\Antlr4.Runtime.Standard.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb">
+      <HintPath>..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MathMLTemplate.html" />
+    <Folder Include="Resources\Html" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Content Include="Resources\Tex\1.tex" />
+    <Content Include="Resources\Tex\10.tex" />
+    <Content Include="Resources\Tex\11.tex" />
+    <Content Include="Resources\Tex\12.tex" />
+    <Content Include="Resources\Tex\13.tex" />
+    <Content Include="Resources\Tex\2.tex" />
+    <Content Include="Resources\Tex\3.tex" />
+    <Content Include="Resources\Tex\4.tex" />
+    <Content Include="Resources\Tex\5.tex" />
+    <Content Include="Resources\Tex\6.tex" />
+    <Content Include="Resources\Tex\7.tex" />
+    <Content Include="Resources\Tex\8.tex" />
+    <Content Include="Resources\Tex\9.tex" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
