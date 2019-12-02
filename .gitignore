@@ -10,3 +10,9 @@
 *.vs
 *Release
 *.pdb
+*.aux
+*.pdf
+*.log
+*.interp
+*.tokens
+*Tex*.cs
