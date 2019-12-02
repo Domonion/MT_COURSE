@@ -14,9 +14,10 @@ expression  : expression '=' expression                     #eqExp
             | '-'expression                                 #unaryExp  
             ;
 
-
-BEGIN : '\\begin{document}';
-END : '\\end{document}';
+OPEN_BRACKET : '{';
+CLOSE_BRACKET : '}';
+BEGIN : '\\begin'OPEN_BRACKET'document'CLOSE_BRACKET;
+END : '\\end'OPEN_BRACKET'document'CLOSE_BRACKET;
 WHITESPACE : [ \n\t\r]+ -> skip;
 UP : '^';
 DOWN : '_';
@@ -24,6 +25,5 @@ PLUS : '+';
 MINUS : '-';
 DIVISION    : '\\div';
 MULTIPLY    : '*';
-LITERAL     : ('a'..'z'|'A'..'Z'|'0'..'9')+;
+ID     : ('a'..'z'|'A'..'Z')+;
 NUMBER : [1-9][0-9]*;
-ID : [a-zA-Z]+;

@@ -42,20 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converter.cs" />
+    <Compile Include="TexToHtmlConverter.cs" />
+    <Compile Include="ParserGenerated\TexBaseVisitor.cs" />
+    <Compile Include="ParserGenerated\TexLexer.cs" />
+    <Compile Include="ParserGenerated\TexParser.cs" />
+    <Compile Include="ParserGenerated\TexVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TexBaseVisitor.cs" />
-    <Compile Include="TexLexer.cs" />
-    <Compile Include="TexParser.cs" />
-    <Compile Include="ITexVisitor.cs" />
     <Compile Include="TexVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ParserGenerated\Tex.interp" />
+    <Content Include="ParserGenerated\Tex.tokens" />
+    <Content Include="ParserGenerated\TexLexer.interp" />
+    <Content Include="ParserGenerated\TexLexer.tokens" />
     <Content Include="Tex.g4" />
-    <Content Include="Tex.interp" />
-    <Content Include="Tex.tokens" />
-    <Content Include="TexLexer.interp" />
-    <Content Include="TexLexer.tokens" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

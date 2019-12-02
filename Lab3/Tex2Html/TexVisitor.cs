@@ -70,7 +70,7 @@ namespace Tex2Html
 
         public override string VisitUnaryExp(TexParser.UnaryExpContext context)
         {
-            return $"<mo> - </mo> {Visit(context)}";
+            return $"<mo> - </mo> {Visit(context.expression())}";
         }
     }
 }

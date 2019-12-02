@@ -15,4 +15,5 @@
 *.log
 *.interp
 *.tokens
-*Tex*.cs
+*Generated*
+*.temp

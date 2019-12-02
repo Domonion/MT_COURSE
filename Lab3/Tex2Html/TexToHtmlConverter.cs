@@ -2,7 +2,7 @@
 
 namespace Tex2Html
 {
-    public static class Converter
+    public static class TexToHtmlConverter
     {
         public static string Convert(string input)
         {
