@@ -46,22 +46,28 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\Html" />
+    <Content Include="Resources\Tex2Html\10\10.tex" />
+    <Content Include="Resources\Tex2Html\11\11.tex" />
+    <Content Include="Resources\Tex2Html\12\12.tex" />
+    <Content Include="Resources\Tex2Html\13\13.tex" />
+    <Content Include="Resources\Tex2Html\14\14.tex" />
+    <Content Include="Resources\Tex2Html\15\15.tex" />
+    <Content Include="Resources\Tex2Html\1\1.tex" />
+    <Content Include="Resources\Tex2Html\2\2.tex" />
+    <Content Include="Resources\Tex2Html\3\3.tex" />
+    <Content Include="Resources\Tex2Html\4\4.tex" />
+    <Content Include="Resources\Tex2Html\5\5.tex" />
+    <Content Include="Resources\Tex2Html\6\6.tex" />
+    <Content Include="Resources\Tex2Html\7\7.tex" />
+    <Content Include="Resources\Tex2Html\8\8.tex" />
+    <Content Include="Resources\Tex2Html\9\9.tex" />
+    <Content Include="Resources\Tex2Html\MathMLTemplate.html" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Tex\1.tex" />
-    <Content Include="Resources\Tex\10.tex" />
-    <Content Include="Resources\Tex\11.tex" />
-    <Content Include="Resources\Tex\12.tex" />
-    <Content Include="Resources\Tex\13.tex" />
-    <Content Include="Resources\Tex\2.tex" />
-    <Content Include="Resources\Tex\3.tex" />
-    <Content Include="Resources\Tex\4.tex" />
-    <Content Include="Resources\Tex\5.tex" />
-    <Content Include="Resources\Tex\6.tex" />
-    <Content Include="Resources\Tex\7.tex" />
-    <Content Include="Resources\Tex\8.tex" />
-    <Content Include="Resources\Tex\9.tex" />
+    <ProjectReference Include="..\Tex2Html\Tex2Html.csproj">
+      <Project>{1741bbe2-5087-434d-afaa-04c4a1cf36d5}</Project>
+      <Name>Tex2Html</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
