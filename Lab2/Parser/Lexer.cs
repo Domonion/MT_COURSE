@@ -10,22 +10,14 @@ namespace Parser
         {
         }
     }
-
-    public interface ILexer
-    {
-        int Pos { get; }
-        IToken Current { get; }
-        void MoveNext();
-    }
-
-    public class MyLexer : ILexer
+    public class Lexer
     {
         [NotNull] private readonly TextReader myInput;
         private Type myType;
         private char myChar;
         public int Pos { get; private set; }
 
-        public MyLexer([NotNull] TextReader input)
+        public Lexer([NotNull] TextReader input)
         {
             myInput = input;
             MoveNext();
@@ -49,7 +41,11 @@ namespace Parser
                 ++Pos;
             }
 
-            myChar = GetChar();
+            do
+            {
+                myChar = GetChar();
+            } while (char.IsWhiteSpace(myChar));
+
             switch (myChar)
             {
                 case '(':
@@ -84,6 +80,6 @@ namespace Parser
             }
         }
 
-        public IToken Current => new MyToken(myType, myChar);
+        public Token Current => new Token(myType, myChar);
     }
 }

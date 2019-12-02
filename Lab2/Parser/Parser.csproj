@@ -42,10 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AST\ITreeNode.cs" />
+    <Compile Include="AST\And.cs" />
+    <Compile Include="AST\Not.cs" />
+    <Compile Include="AST\Or.cs" />
+    <Compile Include="AST\Parenthesis.cs" />
+    <Compile Include="AST\TreeNode.cs" />
     <Compile Include="AST\MegaVizualizer.cs" />
     <Compile Include="AST\Rule.cs" />
     <Compile Include="AST\Terminal.cs" />
+    <Compile Include="AST\Xor.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -39,7 +39,8 @@ namespace Parser.AST
                 }
 
             for (var i = 1; i < res.Count; i++)
-                if (res[i].StartsWith(offset + "Rule") || res[i].StartsWith(offset + "Terminal") || res[i].StartsWith(offset + "none"))
+                if (res[i].StartsWith(offset + "Rule") || res[i].StartsWith(offset + "Terminal") || res[i].StartsWith(offset + "none")
+                    || res[i].StartsWith(offset + "Not") || res[i].StartsWith(offset + "Xor") || res[i].StartsWith(offset + "And") || res[i].StartsWith(offset + "Or"))
                 {
                     for (var j = 1; j <= i; j++)
                     {

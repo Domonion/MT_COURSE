@@ -3,21 +3,21 @@ using System.Text;
 
 namespace Parser.AST
 {
-    public class Rule : ITreeNode
+    public class Rule : TreeNode
     {
         private readonly string myCreatedBy;
-        public IEnumerable<ITreeNode> Descendants { get; }
+        private readonly IEnumerable<TreeNode> myDescendants;
 
-        public Rule(IEnumerable<ITreeNode> descendants, string createdBy)
+        public Rule(IEnumerable<TreeNode> descendants, string createdBy)
         {
             myCreatedBy = createdBy;
-            Descendants = descendants;
+            myDescendants = descendants;
         }
 
         public override string ToString()
         {
             var builder = new StringBuilder();
-            foreach (var node in Descendants)
+            foreach (var node in myDescendants)
             {
                 builder.Append(node);
             }
@@ -25,10 +25,10 @@ namespace Parser.AST
             return builder.ToString();
         }
 
-        public MegaVizualizer GetInternalRepresentation()
+        public override MegaVizualizer GetInternalRepresentation()
         {
             var res = new MegaVizualizer(nameof(Rule) + ": " + myCreatedBy);
-            foreach (var node in Descendants)
+            foreach (var node in myDescendants)
             {
                 res.Add(node?.GetInternalRepresentation());
             }

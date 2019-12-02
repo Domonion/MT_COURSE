@@ -11,43 +11,39 @@ namespace Parser
         }
     }
 
-    public interface IParser
+    public class Parser
     {
-    }
+        [NotNull] private readonly Lexer myLexer;
 
-    public class Parser : IParser
-    {
-        [NotNull] private readonly ILexer myLexer;
-
-        public Parser(ILexer lexer)
+        public Parser(Lexer lexer)
         {
             myLexer = lexer;
         }
 
-        private ITreeNode C()
+        private TreeNode C()
         {
             var now = myLexer.Current;
             switch (now.Type)
             {
                 case Type.NOT:
                 {
-                    var list = new List<ITreeNode> {new Terminal(now)};
+                    var list = new List<TreeNode> {new Not()};
                     myLexer.MoveNext();
                     list.Add(C());
                     return new Rule(list, nameof(C));
                 }
                 case Type.LPAREN:
                 {
-                    var list = new List<ITreeNode> {new Terminal(now)};
+                    var list = new List<TreeNode> {new Parenthesis(now.Value)};
                     myLexer.MoveNext();
                     list.Add(S());
-                    list.Add(new Terminal(myLexer.Current));
+                    list.Add(new Parenthesis(')'));
                     myLexer.MoveNext();
                     return new Rule(list, nameof(C));
                 }
                 case Type.VAR:
                 {
-                    var list = new List<ITreeNode> {new Terminal(now)};
+                    var list = new List<TreeNode> {new Terminal(now)};
                     myLexer.MoveNext();
                     return new Rule(list, nameof(C));
                 }
@@ -56,14 +52,14 @@ namespace Parser
             }
         }
 
-        private ITreeNode D()
+        private TreeNode D()
         {
             var now = myLexer.Current;
             switch (now.Type)
             {
                 case Type.AND:
-                    var list = new List<ITreeNode>();
-                    list.Add(new Terminal(now));
+                    var list = new List<TreeNode>();
+                    list.Add(new And());
                     myLexer.MoveNext();
                     list.Add(B());
                     return new Rule(list, nameof(D));
@@ -77,7 +73,7 @@ namespace Parser
             }
         }
 
-        private ITreeNode B()
+        private TreeNode B()
         {
             var now = myLexer.Current;
             switch (now.Type)
@@ -85,7 +81,7 @@ namespace Parser
                 case Type.NOT:
                 case Type.LPAREN:
                 case Type.VAR:
-                    var list = new List<ITreeNode>();
+                    var list = new List<TreeNode>();
                     list.Add(C());
                     list.Add(D());
                     return new Rule(list, nameof(B));
@@ -94,14 +90,13 @@ namespace Parser
             }
         }
 
-        private ITreeNode E()
+        private TreeNode E()
         {
             var now = myLexer.Current;
             switch (now.Type)
             {
                 case Type.OR:
-                    var list = new List<ITreeNode>();
-                    list.Add(new Terminal(now));
+                    var list = new List<TreeNode> {new Or()};
                     myLexer.MoveNext();
                     list.Add(A());
                     return new Rule(list, nameof(E));
@@ -114,7 +109,7 @@ namespace Parser
             }
         }
 
-        private ITreeNode A()
+        private TreeNode A()
         {
             var now = myLexer.Current;
             switch (now.Type)
@@ -122,7 +117,7 @@ namespace Parser
                 case Type.NOT:
                 case Type.LPAREN:
                 case Type.VAR:
-                    var list = new List<ITreeNode>();
+                    var list = new List<TreeNode>();
                     list.Add(B());
                     list.Add(E());
                     return new Rule(list, nameof(A));
@@ -131,14 +126,13 @@ namespace Parser
             }
         }
 
-        private ITreeNode F()
+        private TreeNode F()
         {
             var now = myLexer.Current;
             switch (now.Type)
             {
                 case Type.XOR:
-                    var list = new List<ITreeNode>();
-                    list.Add(new Terminal(now));
+                    var list = new List<TreeNode>{new Xor()};
                     myLexer.MoveNext();
                     list.Add(S());
                     return new Rule(list, nameof(F));
@@ -150,7 +144,7 @@ namespace Parser
             }
         }
 
-        private ITreeNode S()
+        private TreeNode S()
         {
             var now = myLexer.Current;
             switch (now.Type)
@@ -158,7 +152,7 @@ namespace Parser
                 case Type.NOT:
                 case Type.LPAREN:
                 case Type.VAR:
-                    var list = new List<ITreeNode>();
+                    var list = new List<TreeNode>();
                     list.Add(A());
                     list.Add(F());
                     return new Rule(list, nameof(S));
@@ -167,7 +161,7 @@ namespace Parser
             }
         }
 
-        public ITreeNode Parse()
+        public TreeNode Parse()
         {
             return S();
         }

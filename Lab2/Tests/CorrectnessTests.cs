@@ -37,21 +37,21 @@ namespace Tests
         public void TestAndSimple()
         {
             //B`->&B
-            Check("a&b");
+            Check("a & b");
         }
 
         [Test]
         public void TestOrSimple()
         {
             //A`->|A
-            Check("a|b");
+            Check("a | b");
         }
 
         [Test]
         public void TestXorSimple()
         {
             //S`->^S
-            Check("a^b");
+            Check("a ^ b");
         }
 
         [Test]
@@ -77,77 +77,77 @@ namespace Tests
         public void TestAndMulti()
         {
             //test order of same operators
-            Check("a&b&c");
+            Check("a & b & c");
         }
 
         [Test]
         public void TestAndMultiParenthesis()
         {
             //differ this order
-            Check("(a&b)&c");
+            Check("(a & b) & c");
         }
 
         [Test]
         public void TestAndMultiParenthesis2()
         {
             //again
-            Check("a&(b&c)");
+            Check("a & (b & c)");
         }
 
         [Test]
         public void TestOrAnd()
         {
             //relations between different operations
-            Check("a|b&c");
+            Check("a | b & c");
         }
 
         [Test]
         public void TestAndOr()
         {
             //order
-            Check("a&b|c");
+            Check("a & b | c");
         }
 
         [Test]
         public void TestOrAndParenthesis()
         {
             //differ in tree
-            Check("a|(b&c)");
+            Check("a | ( b & c )");
         }
 
         [Test]
         public void TestAndOrParenthesis()
         {
             //differ in prioritet
-            Check("a&(b|c)");
+            Check("a & ( b | c )");
         }
 
         [Test]
         public void TestParenthesisAndOr()
         {
             //again
-            Check("(a&b)|c");
+            Check("( a & b ) | c");
         }
 
         [Test]
         public void TestParenthesisOrAnd()
         {
             //again
-            Check("(a|b)&c");
+            Check("( a | b ) & c");
         }
 
         [Test]
         public void TestAll1()
         {
             //some full test
-            Check("A^B|C&(!D)");
+            Check("A ^ B | C & (!D)");
         }
 
         [Test]
         public void TestAll2()
         {
             //some full test
-            Check("(!A)&B|C^D");
+            Check("(!A) & B | C ^ D");
         }
 
         [Test]

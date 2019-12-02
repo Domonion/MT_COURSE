@@ -1,21 +1,22 @@
 namespace Parser.AST
 {
-    public class Terminal : ITreeNode
+    public class Terminal : TreeNode
     {
-        public readonly IToken Token;
-        public MegaVizualizer GetInternalRepresentation()
+        private readonly Token myToken;
+
+        public override MegaVizualizer GetInternalRepresentation()
         {
-            return new MegaVizualizer(nameof(Terminal) + ": " + Token.Value);
+            return new MegaVizualizer(nameof(Terminal) + ": " + myToken.Value);
         }
 
-        public Terminal(IToken token)
+        public Terminal(Token token)
         {
-            Token = token;
+            myToken = token;
         }
 
         public override string ToString()
         {
-            return Token.Value.ToString();
+            return myToken.Value.ToString();
         }
     }
 }

@@ -2,18 +2,12 @@ using System;
 
 namespace Parser
 {
-    public interface IToken
-    {
-        Type Type { get; }
-        Char Value { get; }
-    }
-
-    public struct MyToken : IToken
+    public struct Token
     {
         public Type Type { get; }
         public char Value { get; }
 
-        public MyToken(Type type, Char value)
+        public Token(Type type, char value)
         {
             Type = type;
             Value = value;
