@@ -1,17 +1,19 @@
 grammar Tex;
 
-tex         : BEGIN string END #texExp;
+tex         : BEGIN string END                                                          #texExp;
 
-string      : '$' expression '$' #stringExp;
+string      : '$' expression '$'                                                        #stringExp;
 
-expression  : expression '=' expression                     #eqExp
-            | '(' expression ')'                            #parentExp
-            | expression (MULTIPLY|DIVISION) expression     #mulDivExp
-            | expression (PLUS|MINUS) expression            #addSubExp
-            | <assoc=right> expression (UP|DOWN) expression #powExp
-            | NUMBER                                        #numAtomExp
-            | ID                                            #idAtomExp   
-            | '-'expression                                 #unaryExp  
+expression  : expression '=' expression                                                 #eqExp
+            | '(' expression ')'                                                        #parentExp
+            | expression (MULTIPLY|DIVISION) expression                                 #mulDivExp
+            | expression (PLUS|MINUS) expression                                        #addSubExp
+            | expression DOWN OPEN_BRACKET expression CLOSE_BRACKET UP OPEN_BRACKET expression CLOSE_BRACKET #subsupExp
+            | expression UP OPEN_BRACKET expression CLOSE_BRACKET DOWN OPEN_BRACKET expression CLOSE_BRACKET #supsubExp 
+            | <assoc=right> expression (UP|DOWN) OPEN_BRACKET expression CLOSE_BRACKET   #powExp
+            | NUMBER                                                                    #numAtomExp
+            | ID                                                                        #idAtomExp   
+            | '-'expression                                                             #unaryExp  
             ;
 
 OPEN_BRACKET : '{';

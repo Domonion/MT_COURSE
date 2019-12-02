@@ -19,7 +19,7 @@ namespace Tex2Html
 
         public override string VisitParentExp(TexParser.ParentExpContext context)
         {
-            return $"<mrow> <mo> ( </mo> ${context.expression()} <mo> ) </mo> </mrow>";
+            return $"<mrow> <mo> ( </mo> {Visit(context.expression())} <mo> ) </mo> </mrow>";
         }
 
         public override string VisitMulDivExp(TexParser.MulDivExpContext context)
@@ -56,6 +56,15 @@ namespace Tex2Html
             if (context.DOWN() != null)
                 res = $"<msub> {left} {right} </msub>";
             return res;
+        }
+
+        public override string VisitSupsubExp(TexParser.SupsubExpContext context)
+        {
+            return $"<msubsup> {Visit(context.expression(0))} {Visit(context.expression(2))} {Visit(context.expression(1))} </msubsup>";
+        }
+        public override string VisitSubsupExp(TexParser.SubsupExpContext context)
+        {
+            return $"<msubsup> {Visit(context.expression(0))} {Visit(context.expression(1))} {Visit(context.expression(2))} </msubsup>";
         }
 
         public override string VisitNumAtomExp(TexParser.NumAtomExpContext context)

@@ -42,11 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TexToHtmlConverter.cs" />
     <Compile Include="ParserGenerated\TexBaseVisitor.cs" />
     <Compile Include="ParserGenerated\TexLexer.cs" />
     <Compile Include="ParserGenerated\TexParser.cs" />
     <Compile Include="ParserGenerated\TexVisitor.cs" />
+    <Compile Include="TexToHtmlConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TexVisitor.cs" />
   </ItemGroup>

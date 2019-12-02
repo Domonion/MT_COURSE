@@ -8,7 +8,7 @@ namespace Tests
     [TestFixture]
     public class Tests
     {
-        private void DoNamedTest([CallerMemberName] string name = "")
+        private static void DoNamedTest([CallerMemberName] string name = "")
         {
             if (!name.StartsWith("Test"))
             {
@@ -16,22 +16,21 @@ namespace Tests
             }
 
             name = name.Remove(0, 4);
-            //myTODO ошибки обрабатывать!
-            const string tex2html = @"Resources\Tex2Html";
+            const string tex2Html = @"..\..\Resources\Tex2Html";
             const string goldExtension = ".html";
             const string tempExtension = ".temp";
             const string texExtension = ".tex";
-            var MathMLTemplate = Path.Combine(tex2html, "MathMLTemplate" + goldExtension);
-            var currentTexFile = Path.Combine(tex2html, name, name + texExtension);
-            var currentHtmlTempFile = Path.Combine(tex2html, name, name + tempExtension);
-            var currentHtmlGoldFile = Path.Combine(tex2html, name, name + goldExtension);
+            var mathMlTemplate = Path.Combine(tex2Html, "MathMLTemplate" + goldExtension);
+            var currentTexFile = Path.Combine(tex2Html, name, name + texExtension);
+            var currentHtmlTempFile = Path.Combine(tex2Html, name, name + tempExtension);
+            var currentHtmlGoldFile = Path.Combine(tex2Html, name, name + goldExtension);
             Assert.True(File.Exists(currentTexFile), $"Tex file does not exists: {currentTexFile}");
             var fileInfo = new FileInfo(currentTexFile);
             string html;
             using (var streamReader = fileInfo.OpenText())
             {
                 var tex = streamReader.ReadToEnd();
-                html = File.ReadAllText(MathMLTemplate).Replace("<!--    PLACE_CODE_HERE-->", TexToHtmlConverter.Convert(tex));
+                html = File.ReadAllText(mathMlTemplate).Replace("<!--    PLACE_CODE_HERE-->", TexToHtmlConverter.Convert(tex));
             }
 
             using (var tempStream = File.CreateText(currentHtmlTempFile))
