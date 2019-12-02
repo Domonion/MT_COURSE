@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -39,14 +38,16 @@ namespace Parser.AST
                 }
 
             for (var i = 1; i < res.Count; i++)
-                if (res[i].StartsWith(offset + "Rule") || res[i].StartsWith(offset + "Terminal") || res[i].StartsWith(offset + "none")
-                    || res[i].StartsWith(offset + "Not") || res[i].StartsWith(offset + "Xor") || res[i].StartsWith(offset + "And") || res[i].StartsWith(offset + "Or"))
+                if (res[i].StartsWith(offset + nameof(Rule)) || res[i].StartsWith(offset + nameof(Terminal)) || res[i].StartsWith(offset + "none") ||
+                    res[i].StartsWith(offset + nameof(Parenthesis))
+                    || res[i].StartsWith(offset + nameof(Not)) || res[i].StartsWith(offset + nameof(Xor)) || res[i].StartsWith(offset + nameof(And)) ||
+                    res[i].StartsWith(offset + nameof(Or)))
                 {
                     for (var j = 1; j <= i; j++)
                     {
                         var now = res[j].ToCharArray();
                         now[0] = '|';
-                        res[j] = new String(now);
+                        res[j] = new string(now);
                     }
 
                     var kek = res[i].ToCharArray();
