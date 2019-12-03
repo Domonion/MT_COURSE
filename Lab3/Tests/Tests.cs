@@ -133,5 +133,11 @@ namespace Tests
         {
             DoNamedTest();
         }
+
+        [Test]
+        public void Test16()
+        {
+            DoNamedTest();
+        }
     }
 }

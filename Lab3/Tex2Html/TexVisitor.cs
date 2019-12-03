@@ -42,7 +42,7 @@ namespace Tex2Html
             if (context.PLUS() != null)
                 res = $"<mrow> {left} <mo>+</mo> {right} </mrow>";
             if (context.MINUS() != null)
-                res = $"<mrow> {left} <mo>+</mo> {right} </mrow>";
+                res = $"<mrow> {left} <mo>-</mo> {right} </mrow>";
             return res;
         }
 
