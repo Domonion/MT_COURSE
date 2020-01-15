@@ -1,23 +1,18 @@
 grammar Lexer;
 
-grammatix : grammar_name rule_list token_list;
+grammatix : start rule1+ token+;
 
-grammar_name : NAME DC;
-rule_list : rule1 | rule1 rule_list;
-rule1 : RULE_NAME DDOT atom_list DC;
+start : NAME DC;
+rule1 : RULE_NAME DDOT atom+ DC;
+atom : RULE_NAME | TOKEN_NAME;
+token : TOKEN_NAME DDOT REGEX DC;
 
 //attributes : SB attributes_list SCB;
 //attributes_list : attribute attributes_end?;
 //attributes_end : COMMA attribute attributes_end?;
 //attribute : TYPE ANY_NAME;
 
-atom_list : atom | atom atom_list;
-atom : RULE_NAME | TOKEN_NAME;
-
-token_list : token+;
-token : TOKEN_NAME DDOT REGEX DC;
-
-REGEX : '${' .*? '}$';
+REGEX : '\'' .*? '\'';
 fragment LOW_CHAR : 'a'..'z';
 fragment UP_CHAR : 'A'..'Z';
 NAME : 'grammar '(LOW_CHAR|UP_CHAR)+;
