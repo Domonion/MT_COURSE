@@ -36,7 +36,7 @@ namespace LexerGenerator
                 writer.WriteLine("public string CurrentString { get; private set; }");
                 foreach (var (name, text) in tokens)
                 {
-                    writer.WriteLine("private static readonly Regex " + name + "REGEX = new Regex(\"^\" + \"" + text + "\");");
+                    writer.WriteLine("private static readonly Regex " + name + "REGEX = new Regex(\"^\" + @\"" + text + "\");");
                 }
 
                 writer.WriteLine("private readonly string myInput;");

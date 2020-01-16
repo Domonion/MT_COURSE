@@ -46,6 +46,8 @@
     <Compile Include="generated\ParserLexer.cs" />
     <Compile Include="generated\ParserParser.cs" />
     <Compile Include="generated\ParserVisitor.cs" />
+    <Compile Include="lexer.cs" />
+    <Compile Include="parser.cs" />
     <Compile Include="ParserGenerator.cs" />
     <Compile Include="ParserVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +61,7 @@
     <Content Include="generated\ParserLexer.interp" />
     <Content Include="generated\ParserLexer.tokens" />
     <Content Include="Parser.g4" />
+    <Content Include="Test.g4" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -87,6 +87,10 @@ namespace ParserGenerator
                         foreach (var atom in body)
                         {
                             bodyList.RemoveAt(0);
+                            if (bodyList.Count == 0)
+                            {
+                                bodyList.Add(myEps);
+                            }
                             if (atom.IsRule)
                             {
                                 var atomRule = (Rule) atom;
