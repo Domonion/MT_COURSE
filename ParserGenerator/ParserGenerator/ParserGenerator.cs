@@ -9,6 +9,7 @@ namespace ParserGenerator
     public static class ParserGenerator
     {
         private static readonly Token myEps = new Token("EPS");
+        private static readonly Token myEof = new Token("EOF");
 
         private static List<IAtom> GetSubFirst(List<IAtom> body, Dictionary<Rule, HashSet<IAtom>> first)
         {
@@ -70,9 +71,59 @@ namespace ParserGenerator
             }
         }
 
-        private static void CountFollow(Dictionary<Rule, HashSet<IAtom>> first, out Dictionary<Rule, HashSet<IAtom>> follow, HashSet<Rule> rules)
+        private static void CountFollow(Dictionary<Rule, HashSet<IAtom>> first, out Dictionary<Rule, HashSet<IAtom>> follow, HashSet<Rule> rules, Rule start)
         {
-            follow = null;
+            follow = rules.ToDictionary(rule => rule, rule => new HashSet<IAtom>());
+            follow[start].Add(myEof);
+            var changed = true;
+            while (changed)
+            {
+                changed = false;
+                foreach (var rule in rules)
+                {
+                    foreach (var body in rule.Bodies)
+                    {
+                        var bodyList = body.ToList();
+                        foreach (var atom in body)
+                        {
+                            bodyList.RemoveAt(0);
+                            if (atom.IsRule)
+                            {
+                                var atomRule = (Rule) atom;
+                                var tailFirst = GetSubFirst(bodyList, first);
+                                var followCountBefore = follow[atomRule].Count;
+                                if (tailFirst.Contains(myEps))
+                                {
+                                    follow[atomRule].UnionWith(follow[rule]);
+                                }
+                                tailFirst.Remove(myEps);
+                                follow[atomRule].UnionWith(tailFirst);
+                                var followCountAfter = follow[atomRule].Count;
+                                changed |= followCountAfter != followCountBefore;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void Log(Dictionary<Rule, HashSet<IAtom>> toDump, StreamWriter writer, string identifier)
+        {
+            writer.WriteLine("currently dumping: " + identifier);
+            writer.WriteLine($"Rules: {toDump.Count}");
+            const string ident = "    ";
+            foreach (var kvp in toDump)
+            {
+                var rule = kvp.Key;
+                var set = kvp.Value;
+                writer.WriteLine($"Rule {rule.Name} has {set.Count} elements:");
+                var ind = 0;
+                foreach (var atom in set)
+                {
+                    ind++;
+                    writer.WriteLine(ident + $"{ind}. {atom.Name}");
+                }
+            }
         }
 
         public static void GenerateParser(string inputFile, string outputFile)
@@ -97,9 +148,9 @@ namespace ParserGenerator
             {
                 //myTODO EPS and SKIP
                 CountFirst(out Dictionary<Rule, HashSet<IAtom>> first, rules);
-                CountFollow(first, out var follow, rules);
-//                Log(first, writer);
-//                Log(follow, writer);
+                CountFollow(first, out var follow, rules, visitor.start);
+                Log(first, writer, nameof(first));
+                Log(follow, writer, nameof(follow));
                 
                 //6. генерировать
                 //да буду я строить дерево разбора, и на этом дерево разбора будут навешаны атрибуты хуле.

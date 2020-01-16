@@ -133,6 +133,7 @@ namespace ParserGenerator
     internal class ParserVisitor : ParserBaseVisitor<List<List<IAtom>>>
     {
         public readonly HashSet<Rule> Rules;
+        public Rule start = null;
 
         public ParserVisitor()
         {
@@ -148,8 +149,13 @@ namespace ParserGenerator
 
         public override List<List<IAtom>> VisitRule1(ParserParser.Rule1Context context)
         {
-            Rules.Add(new Rule(context.RULE_NAME().GetText(), VisitRule_body(context.rule_body()), context.ACTION()?.GetText(),
-                context.attributes()?.GetText()));
+            var currentRule = new Rule(context.RULE_NAME().GetText(), VisitRule_body(context.rule_body()), context.ACTION()?.GetText(),
+                context.attributes()?.GetText());
+            if (start == null)
+            {
+                start = currentRule;
+            }
+            Rules.Add(currentRule);
             return null;
         }
 
