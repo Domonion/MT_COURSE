@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace LexerGenerator
 {
-    public class TokenContainer
+    internal class TokenContainer
     {
         public readonly HashSet<(string, string)> Tokens = new HashSet<(string, string)>();
 

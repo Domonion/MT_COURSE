@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DB575CAA-2E75-4DAC-95BD-6CEA96385DA4}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{0F08D277-CB94-4A8E-9B1A-73B92F07A8B3}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Main</RootNamespace>
-    <AssemblyName>Main</AssemblyName>
+    <RootNamespace>ParserGenerator</RootNamespace>
+    <AssemblyName>ParserGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,24 +32,33 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.Runtime.Standard, Version=4.7.2.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f">
+      <HintPath>..\packages\Antlr4.Runtime.Standard.4.7.2\lib\net35\Antlr4.Runtime.Standard.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="generated\ParserBaseVisitor.cs" />
+    <Compile Include="generated\ParserLexer.cs" />
+    <Compile Include="generated\ParserParser.cs" />
+    <Compile Include="generated\ParserVisitor.cs" />
+    <Compile Include="ParserGenerator.cs" />
+    <Compile Include="ParserVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LexerGenerator\LexerGenerator.csproj">
-      <Project>{1761e49e-1561-49ed-a23f-2f47c8345142}</Project>
-      <Name>LexerGenerator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ParserGenerator\ParserGenerator.csproj">
-      <Project>{0f08d277-cb94-4a8e-9b1a-73b92f07a8b3}</Project>
-      <Name>ParserGenerator</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="generated\Parser.interp" />
+    <Content Include="generated\Parser.tokens" />
+    <Content Include="generated\ParserLexer.interp" />
+    <Content Include="generated\ParserLexer.tokens" />
+    <Content Include="Parser.g4" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,7 +3,7 @@ using Antlr4.Runtime;
 
 namespace LexerGenerator
 {
-    public class LexerGenerator
+    public static class LexerGenerator
     {
         public static void GenerateLexer(string inputFile, string outputFile)
         {

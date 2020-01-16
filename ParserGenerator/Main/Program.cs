@@ -34,7 +34,7 @@ namespace Main
             while (done)
             {
                 Console.Write(":");
-                var currentCommand = Console.ReadLine().Trim();
+                var currentCommand = Console.ReadLine()?.Trim();
                 switch (currentCommand)
                 {
                     case "exit":
@@ -81,6 +81,26 @@ namespace Main
                         last.Execute();
                         break;
                     }
+                    case "parser":
+                    {
+                        Console.Write("path to grammar file: ");
+                        var pathToGrammar = Console.ReadLine();
+                        Console.Write("path to parser: ");
+                        var pathToParser = Console.ReadLine();
+                        last = new Command(new List<string> {pathToGrammar, pathToParser}, list =>
+                        {
+                            try
+                            {
+                                ParserGenerator.ParserGenerator.GenerateParser(list[0], list[1]);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                            }
+                        });
+                        last.Execute();
+                        break;
+                    }
                     case "":
                     {
                         break;
@@ -96,36 +116,3 @@ namespace Main
         }
     }
 }
-/*
-grammar Lexer;
-
-grammatix : rule_list token_list;
-
-rule_list : rule1 | rule1 rule_list;
-rule1 : RULE_NAME DDOT atom_list DC;
-
-//attributes : SB attributes_list SCB;
-//attributes_list : attribute attributes_end?;
-//attributes_end : COMMA attribute attributes_end?;
-//attribute : TYPE ANY_NAME;
-
-atom_list : atom | atom atom_list;
-atom : RULE_NAME | TOKEN_NAME;
-
-token_list : token+;
-token : TOKEN_NAME DDOT REGEX DC;
-
-REGEX : '${' .*? '}$';
-fragment LOW_CHAR : 'a'..'z';
-fragment UP_CHAR : 'A'..'Z';
-grammar_name : GRAMMAR NAME DC;
-GRAMMAR : 'grammar';
-NAME : CHAR+;
-DDOT : ':';
-DC : ';';
-//RULE_NAME : [a-z][a-z]*;
-//TOKEN_NAME : [A-Z][A-Z]*;
-WS : [ \n\t\r]+ -> skip;
-RULE_NAME : LOW_CHAR+;
-TOKEN_NAME : UP_CHAR+;
-*/
