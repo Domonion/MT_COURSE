@@ -3,8 +3,8 @@ grammar Parser;
 grammatix : start rule1+ token+ EOF;
 
 start : NAME DC;
-rule1 : RULE_NAME attributes? DDOT rule_body ACTION? DC;
-rule_body : atom+ | atom+ SEPARATOR rule_body;
+rule1 : RULE_NAME attributes? DDOT rule_body DC;
+rule_body : atom+ ACTION? | atom+ ACTION? SEPARATOR rule_body;
 atom : RULE_NAME | TOKEN_NAME;
 token : TOKEN_NAME attributes? DDOT regex ACTION? DC;
 regex :  UPPER_COMA ~(UPPER_COMA)* UPPER_COMA;
