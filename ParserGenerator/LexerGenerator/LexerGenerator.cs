@@ -1,4 +1,6 @@
+using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 
 namespace LexerGenerator
@@ -22,15 +24,19 @@ namespace LexerGenerator
                 writer.WriteLine("using System.Text.RegularExpressions;");
                 writer.WriteLine("namespace Lexer{");
                 writer.WriteLine("public enum Token{");
-                var ind = 0;
+                var hasSkip = false;
                 foreach (var (name, _) in tokens)
                 {
+                    hasSkip |= name == "SKIP";
                     writer.WriteLine(name);
-                    ind++;
-                    if (ind != tokens.Count)
-                        writer.WriteLine(",");
+                    writer.WriteLine(",");
                 }
-
+                writer.WriteLine("EOF");
+                if (!hasSkip)
+                {
+                    writer.WriteLine(",");
+                    writer.WriteLine("SKIP");
+                }
                 writer.WriteLine("}");
                 writer.WriteLine("public class Lexer{");
                 writer.WriteLine("public string CurrentString { get; private set; }");
@@ -47,6 +53,7 @@ namespace LexerGenerator
                 writer.WriteLine("public Token NextToken(){");
                 foreach (var (name, _) in tokens)
                 {
+                    if (name == "EPS" || name == "EOF") throw new Exception($"Token name {name} reserved, choose another name.");
                     writer.WriteLine("if(" + name + "REGEX.IsMatch(myInput, myIndex)){");
                     writer.WriteLine("var match = " + name + "REGEX.Match(myInput, myIndex);");
                     writer.WriteLine("CurrentString = match.Value;");
@@ -55,6 +62,9 @@ namespace LexerGenerator
                     writer.WriteLine("}");
                 }
 
+                writer.WriteLine("if(myInput.Count == myIndex){");
+                writer.WriteLine("return Token.EOF;");
+                writer.WriteLine("}");
                 writer.WriteLine("throw new InvalidDataException();");
                 writer.WriteLine("}");
                 writer.WriteLine("}");

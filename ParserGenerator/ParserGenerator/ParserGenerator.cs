@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Antlr4.Runtime;
-using JetBrains.Annotations;
 
 namespace ParserGenerator
 {
@@ -13,7 +12,7 @@ namespace ParserGenerator
         private static readonly Token myEof = new Token("EOF");
         private static readonly Token mySkip = new Token("SKIP");
 
-        private static List<IAtom> GetSubFirst(List<IAtom> body, Dictionary<Rule, HashSet<IAtom>> first)
+        private static List<Token> GetSubFirst(List<IAtom> body, Dictionary<Rule, HashSet<Token>> first)
         {
             if (body.Count == 0)
             {
@@ -22,12 +21,12 @@ namespace ParserGenerator
 
             if (body[0].Equals(myEps))
             {
-                return new List<IAtom> {body[0]};
+                return new List<Token> {myEps};
             }
 
             if (!body[0].IsRule)
             {
-                return new List<IAtom> {body[0]};
+                return new List<Token> {(Token) body[0]};
             }
 
             var rule = (Rule) body[0];
@@ -46,15 +45,13 @@ namespace ParserGenerator
                 firstWithoutEps.UnionWith(subFirstForAnotherBody);
                 return firstWithoutEps.ToList();
             }
-            else
-            {
-                return first[rule].ToList();
-            }
+
+            return first[rule].ToList();
         }
 
-        private static void CountFirst(out Dictionary<Rule, HashSet<IAtom>> first, HashSet<Rule> rules)
+        private static void CountFirst(out Dictionary<Rule, HashSet<Token>> first, HashSet<Rule> rules)
         {
-            first = rules.ToDictionary(rule => rule, rule => new HashSet<IAtom>());
+            first = rules.ToDictionary(rule => rule, rule => new HashSet<Token>());
             var changed = true;
             while (changed)
             {
@@ -63,7 +60,7 @@ namespace ParserGenerator
                 {
                     foreach (var body in rule.Bodies)
                     {
-                        var subFirst = GetSubFirst(body, first);
+                        var subFirst = GetSubFirst(body.Atoms, first);
                         var beforeCount = first[rule].Count;
                         first[rule].UnionWith(subFirst);
                         var afterCount = first[rule].Count;
@@ -73,10 +70,10 @@ namespace ParserGenerator
             }
         }
 
-        private static void CountFollow(Dictionary<Rule, HashSet<IAtom>> first, out Dictionary<Rule, HashSet<IAtom>> follow, HashSet<Rule> rules,
+        private static void CountFollow(Dictionary<Rule, HashSet<Token>> first, out Dictionary<Rule, HashSet<Token>> follow, HashSet<Rule> rules,
             Rule start)
         {
-            follow = rules.ToDictionary(rule => rule, rule => new HashSet<IAtom>());
+            follow = rules.ToDictionary(rule => rule, rule => new HashSet<Token>());
             follow[start].Add(myEof);
             var changed = true;
             while (changed)
@@ -86,8 +83,8 @@ namespace ParserGenerator
                 {
                     foreach (var body in rule.Bodies)
                     {
-                        var bodyList = body.ToList();
-                        foreach (var atom in body)
+                        var bodyList = body.Atoms.ToList();
+                        foreach (var atom in body.Atoms)
                         {
                             bodyList.RemoveAt(0);
                             if (bodyList.Count == 0)
@@ -116,7 +113,7 @@ namespace ParserGenerator
             }
         }
 
-        private static void Log(Dictionary<Rule, HashSet<IAtom>> toDump, string outputFile, string identifier)
+        private static void Log(Dictionary<Rule, HashSet<Token>> toDump, string outputFile, string identifier)
         {
             outputFile += $".{identifier}.log";
             using (var writer = File.CreateText(outputFile))
@@ -139,6 +136,46 @@ namespace ParserGenerator
             }
         }
 
+        private static string ReplaceAction(string action, int ind)
+        {
+            if (action != null)
+            {
+                action = action.Replace("$me", "myReturn").Replace("$text", "text");
+                for (var i = 0; i < ind; i++)
+                {
+                    action = action.Replace("$" + i, "ret" + i);
+                }
+            }
+
+            return action;
+        }
+
+        private static string CreateIfFollow(Dictionary<Rule, HashSet<Token>> follow, Rule rule)
+        {
+            var res = "";
+            foreach (var token in follow[rule])
+            {
+                res += token.Name + " == CurrentToken || ";
+            }
+            res += "false";
+            return res;
+        }
+
+        private static string CreateIfFirst(Dictionary<Rule, HashSet<Token>> first, Body body, ref bool hasEps)
+        {
+            var res = "";
+            var firstList = GetSubFirst(body.Atoms, first);
+            hasEps |= firstList.Contains(myEps);
+            firstList.Remove(myEps);
+            foreach (var token in firstList)
+            {
+                res += token.Name + " == CurrentToken || ";
+            }
+
+            res += "false";
+            return res;
+        }
+
         public static void GenerateParser(string inputFile, string outputFile)
         {
             var inputStream = new AntlrFileStream(inputFile);
@@ -151,31 +188,130 @@ namespace ParserGenerator
             var rules = visitor.Rules;
             foreach (var body in rules.SelectMany(rule => rule.Bodies))
             {
-                for (var i = 0; i < body.Count; i++)
+                for (var i = 0; i < body.Atoms.Count; i++)
                 {
-                    body[i] = body[i].Convert(rules);
+                    body.Atoms[i] = body.Atoms[i].Convert(rules);
                 }
             }
 
             using (var writer = File.CreateText(outputFile))
             {
-                CountFirst(out Dictionary<Rule, HashSet<IAtom>> first, rules);
-                CountFollow(first, out var follow, rules, visitor.start);
+                CountFirst(out var first, rules);
+                CountFollow(first, out var follow, rules, visitor.Start);
                 Log(first, outputFile, nameof(first));
                 Log(follow, outputFile, nameof(follow));
                 writer.Write("public class Parser{");
                 writer.WriteLine("private readonly Lexer myLexer;");
                 writer.WriteLine("public Parser(Lexer lexer){");
-                writer.WriteLine("myLexer = lexer");
+                writer.WriteLine("myLexer = lexer;");
+                writer.WriteLine("Next()");
                 writer.WriteLine("}");
-                //1. generate all answer for every rule node 
-                //2. in this answer node place attributes
-                //inherited attribute can be implemened via parameters + indicating order of rules evaluating in actions
-                foreach (var (token, _) in tokens.Tokens)
+                foreach (var rule in rules)
                 {
-                    
-                    
+                    writer.WriteLine("public class " + rule.Name + "return{");
+                    writer.WriteLine(rule.Attributes.Replace(',', ';') + ';');
+                    writer.WriteLine("}");
                 }
+
+                writer.WriteLine("private Token CurrentToken;");
+                writer.WriteLine("private string CurrentTokenString;");
+                writer.WriteLine("private void Next(){");
+                writer.WriteLine("var next = myLexer.NextToken();");
+                writer.WriteLine("while(next == Token.SKIP){");
+                writer.WriteLine("next = myLexer.NextToken();");
+                writer.WriteLine("}");
+                writer.WriteLine("if(next == Token.EOF){");
+                writer.WriteLine("throw new Exception(\"Lexer has ended.\");");
+                writer.WriteLine("}");
+                writer.WriteLine("CurrentToken = next;");
+                writer.WriteLine("CurrentTokenString = myLexer.CurrentString;");
+                writer.WriteLine("}");
+                foreach (var rule in rules)
+                {
+                    writer.WriteLine("public " + rule.Name + "return " + rule.Name + "(){");
+                    var hasEps = false;
+                    Body epsBody = null;
+                    foreach (var body in rule.Bodies)
+                    {
+                        if (!(body.Atoms.Count == 1 && body.Atoms[0].Equals(myEps)))
+                        {
+                            var was = hasEps;
+                            writer.WriteLine("if(" + CreateIfFirst(first, body, ref hasEps) + "){");
+                            if (was != hasEps)
+                            {
+                                epsBody = body;
+                            }
+
+                            writer.WriteLine("var text = new List<string>();");
+                            writer.WriteLine("var myReturn = new " + rule.Name + "return();");
+                            var ind = 0;
+                            foreach (var atom in body.Atoms)
+                            {
+                                if (atom.IsRule)
+                                {
+                                    writer.WriteLine("text.Add(\"\");");
+                                    writer.WriteLine("Next();");
+                                    writer.WriteLine("var ret" + ind + " = " + atom.Name + "();");
+                                }
+                                else
+                                {
+                                    writer.WriteLine("text.Add(CurrentTokenString);");
+                                    writer.WriteLine("Next();");
+                                }
+
+                                ind++;
+                            }
+
+                            writer.WriteLine(ReplaceAction(body.Action, ind));
+                            writer.WriteLine("return myReturn;");
+                            writer.WriteLine("} else ");
+                        }
+                        else
+                        {
+                            hasEps = true;
+                            epsBody = body;
+                        }
+                    }
+
+                    if (hasEps)
+                    {
+                        //1. i have direct epsilon - then i have body and have to use its action
+                        //2. i have indirect epsilon - it means i should use body of this
+                        writer.WriteLine("if(" + CreateIfFollow(follow, rule) + "){");
+                        writer.WriteLine("var text = new List<string>();");
+                        writer.WriteLine("var myReturn = new " + rule.Name + "return();");
+                        var ind = 0;
+                        if (!(epsBody.Atoms.Count == 1 && epsBody.Atoms[0].Equals(myEps)))
+                        {
+                            foreach (var atom in epsBody.Atoms)
+                            {
+                                if (atom.IsRule)
+                                {
+                                    writer.WriteLine("text.Add(\"\");");
+                                    writer.WriteLine("Next();");
+                                    writer.WriteLine("var ret" + ind + " = " + atom.Name + "();");
+                                }
+                                else
+                                {
+                                    writer.WriteLine("text.Add(CurrentTokenString);");
+                                    writer.WriteLine("Next();");
+                                }
+                            }
+                            ind++;
+                        }
+
+                        writer.WriteLine(ReplaceAction(epsBody.Action, ind));
+                        writer.WriteLine("return myReturn;");
+                        writer.WriteLine("} else ");
+                    }
+
+                    writer.WriteLine("{");
+                    writer.WriteLine("throw new Exception(\"incorrect token\");");
+                    writer.WriteLine("}");
+                    writer.WriteLine("}");
+                }
+
+                //inherited attribute can be implemened via parameters + indicating order of rules evaluating in actions
                 writer.Write("}");
             }
         }

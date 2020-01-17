@@ -64,6 +64,8 @@
     <Content Include="generated\Parser.tokens" />
     <Content Include="generated\ParserLexer.interp" />
     <Content Include="generated\ParserLexer.tokens" />
+    <Content Include="parser.cs.first.log" />
+    <Content Include="parser.cs.follow.log" />
     <Content Include="Parser.g4" />
     <Content Include="Test.g4" />
   </ItemGroup>

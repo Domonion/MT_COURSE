@@ -6,7 +6,7 @@ start : NAME DC;
 rule1 : RULE_NAME attributes? DDOT rule_body DC;
 rule_body : atom+ ACTION? | atom+ ACTION? SEPARATOR rule_body;
 atom : RULE_NAME | TOKEN_NAME;
-token : TOKEN_NAME attributes? DDOT regex ACTION? DC;
+token : TOKEN_NAME DDOT regex DC;
 regex :  UPPER_COMA ~(UPPER_COMA)* UPPER_COMA;
 
 attributes : SB attributes_list SCB;

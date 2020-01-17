@@ -28,6 +28,18 @@ namespace ParserGenerator
         IAtom Convert(HashSet<Rule> context);
     }
 
+    internal class Body
+    {
+        public List<IAtom> Atoms { get; }
+        public string Action { get; }
+
+        public Body(List<IAtom> atoms, string action)
+        {
+            Action = action;
+            Atoms = atoms;
+        }
+    }
+
     internal class Rule : IAtom
     {
         public static bool Check(string name, HashSet<Rule> rules, out Rule res)
@@ -48,8 +60,7 @@ namespace ParserGenerator
 
         public bool IsRule { get; } = true;
         public string Name { get; }
-        public List<List<IAtom>> Bodies { get; }
-        public string Action { get; }
+        public List<Body> Bodies { get; }
         public string Attributes { get; }
 
         public override int GetHashCode()
@@ -62,11 +73,10 @@ namespace ParserGenerator
             return GetHashCode() == obj?.GetHashCode() && Name == (obj as IAtom)?.Name;
         }
 
-        public Rule(string name, List<List<IAtom>> bodies, string action, string attributes)
+        public Rule(string name, List<Body> bodies, string attributes)
         {
             Name = name;
             Bodies = bodies;
-            Action = action;
             Attributes = attributes;
         }
     }
@@ -130,46 +140,37 @@ namespace ParserGenerator
         }
     }
 
-    internal class ParserVisitor : ParserBaseVisitor<List<List<IAtom>>>
+    internal class ParserVisitor : ParserBaseVisitor<List<Body>>
     {
-        public readonly HashSet<Rule> Rules;
-        public Rule start = null;
+        public readonly HashSet<Rule> Rules = new HashSet<Rule>();
+        public readonly HashSet<Token> Tokens = new HashSet<Token>();
+        public Rule Start;
 
-        public ParserVisitor()
-        {
-            Rules = new HashSet<Rule>();
-        }
-
-        protected override List<List<IAtom>> AggregateResult(List<List<IAtom>> aggregate, List<List<IAtom>> nextResult)
+        protected override List<Body> AggregateResult(List<Body> aggregate, List<Body> nextResult)
         {
             if (nextResult != null)
                 aggregate?.AddRange(nextResult);
             return aggregate ?? nextResult;
         }
 
-        public override List<List<IAtom>> VisitRule1(ParserParser.Rule1Context context)
+        public override List<Body> VisitRule1(ParserParser.Rule1Context context)
         {
-            var currentRule = new Rule(context.RULE_NAME().GetText(), VisitRule_body(context.rule_body()), context.ACTION()?.GetText(),
-                context.attributes()?.GetText());
-            if (start == null)
+            var currentRule = new Rule(context.RULE_NAME().GetText(), VisitRule_body(context.rule_body()), context.attributes()?.GetText());
+            if (Start == null)
             {
-                start = currentRule;
+                Start = currentRule;
             }
             Rules.Add(currentRule);
             return null;
         }
 
-        public override List<List<IAtom>> VisitRule_body(ParserParser.Rule_bodyContext context)
+        public override List<Body> VisitRule_body(ParserParser.Rule_bodyContext context)
         {
             var bodies = base.VisitRule_body(context);
             var atoms = context.atom().ToList();
-            var atomsList = new List<IAtom>();
-            foreach (var atom in atoms)
-            {
-                atomsList.Add(new Unknown(atom.GetText()));
-            }
-
-            return AggregateResult(new List<List<IAtom>> {atomsList}, bodies);
+            var atomsList = atoms.Select(atom => new Unknown(atom.GetText())).Cast<IAtom>().ToList();
+            var action = context.ACTION()?.GetText();
+            return AggregateResult(new List<Body> {new Body(atomsList, action)}, bodies);
         }
     }
 }
