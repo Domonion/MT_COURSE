@@ -155,10 +155,26 @@ namespace ParserGenerator
             var res = "";
             foreach (var token in follow[rule])
             {
-                res += token.Name + " == CurrentToken || ";
+                res += "Token." + token.Name + " == CurrentToken || ";
             }
             res += "false";
             return res;
+        }
+
+        private static string ReplaceAttributes(string attributes)
+        {
+            if (attributes != null)
+            {
+                attributes = attributes.Remove(0, 1);
+                attributes = attributes.Remove(attributes.Length - 1, 1);
+                attributes = attributes.Replace(',', ';') + ';';
+                attributes = attributes.Replace(":", " ");
+                attributes = "public " + attributes;
+                attributes = attributes.Replace(";", ";public");
+                attributes = attributes.Substring(0, attributes.Length - 6);
+            }
+
+            return attributes;
         }
 
         private static string CreateIfFirst(Dictionary<Rule, HashSet<Token>> first, Body body, ref bool hasEps)
@@ -169,7 +185,7 @@ namespace ParserGenerator
             firstList.Remove(myEps);
             foreach (var token in firstList)
             {
-                res += token.Name + " == CurrentToken || ";
+                res += "Token." + token.Name + " == CurrentToken || ";
             }
 
             res += "false";
@@ -200,16 +216,19 @@ namespace ParserGenerator
                 CountFollow(first, out var follow, rules, visitor.Start);
                 Log(first, outputFile, nameof(first));
                 Log(follow, outputFile, nameof(follow));
-                writer.Write("public class Parser{");
-                writer.WriteLine("private readonly Lexer myLexer;");
-                writer.WriteLine("public Parser(Lexer lexer){");
+                writer.WriteLine("using System;");
+                writer.WriteLine("using System.Collections.Generic;");
+                writer.WriteLine("namespace Generated{");
+                writer.WriteLine("public class GeneratedParser{");
+                writer.WriteLine("private readonly GeneratedLexer myLexer;");
+                writer.WriteLine("public GeneratedParser(GeneratedLexer lexer){");
                 writer.WriteLine("myLexer = lexer;");
-                writer.WriteLine("Next()");
+                writer.WriteLine("Next();");
                 writer.WriteLine("}");
                 foreach (var rule in rules)
                 {
                     writer.WriteLine("public class " + rule.Name + "return{");
-                    writer.WriteLine(rule.Attributes.Replace(',', ';') + ';');
+                    writer.WriteLine(ReplaceAttributes(rule.Attributes));
                     writer.WriteLine("}");
                 }
 
@@ -312,7 +331,8 @@ namespace ParserGenerator
                 }
 
                 //inherited attribute can be implemened via parameters + indicating order of rules evaluating in actions
-                writer.Write("}");
+                writer.WriteLine("}");
+                writer.WriteLine("}");
             }
         }
     }

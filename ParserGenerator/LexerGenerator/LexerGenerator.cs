@@ -22,7 +22,7 @@ namespace LexerGenerator
             {
                 writer.WriteLine("using System.IO;");
                 writer.WriteLine("using System.Text.RegularExpressions;");
-                writer.WriteLine("namespace Lexer{");
+                writer.WriteLine("namespace Generated{");
                 writer.WriteLine("public enum Token{");
                 var hasSkip = false;
                 foreach (var (name, _) in tokens)
@@ -38,7 +38,7 @@ namespace LexerGenerator
                     writer.WriteLine("SKIP");
                 }
                 writer.WriteLine("}");
-                writer.WriteLine("public class Lexer{");
+                writer.WriteLine("public class GeneratedLexer{");
                 writer.WriteLine("public string CurrentString { get; private set; }");
                 foreach (var (name, text) in tokens)
                 {
@@ -47,7 +47,7 @@ namespace LexerGenerator
 
                 writer.WriteLine("private readonly string myInput;");
                 writer.WriteLine("private int myIndex;");
-                writer.WriteLine("public Lexer(string input){");
+                writer.WriteLine("public GeneratedLexer(string input){");
                 writer.WriteLine("myInput = input;");
                 writer.WriteLine("}");
                 writer.WriteLine("public Token NextToken(){");
@@ -62,7 +62,7 @@ namespace LexerGenerator
                     writer.WriteLine("}");
                 }
 
-                writer.WriteLine("if(myInput.Count == myIndex){");
+                writer.WriteLine("if(myInput.Length == myIndex){");
                 writer.WriteLine("return Token.EOF;");
                 writer.WriteLine("}");
                 writer.WriteLine("throw new InvalidDataException();");

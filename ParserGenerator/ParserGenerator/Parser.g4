@@ -12,7 +12,7 @@ regex :  UPPER_COMA ~(UPPER_COMA)* UPPER_COMA;
 attributes : SB attributes_list SCB;
 attributes_list : attribute attributes_end?;
 attributes_end : COMMA attribute attributes_end?;
-attribute : (RULE_NAME|TOKEN_NAME) (RULE_NAME|TOKEN_NAME);
+attribute : (RULE_NAME|TOKEN_NAME) DDOT (RULE_NAME|TOKEN_NAME);
 
 fragment LOW_CHAR : 'a'..'z';
 fragment UP_CHAR : 'A'..'Z';
