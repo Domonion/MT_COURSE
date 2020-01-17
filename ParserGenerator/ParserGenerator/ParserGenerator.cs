@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Antlr4.Runtime;
+using JetBrains.Annotations;
 
 namespace ParserGenerator
 {
@@ -10,6 +11,7 @@ namespace ParserGenerator
     {
         private static readonly Token myEps = new Token("EPS");
         private static readonly Token myEof = new Token("EOF");
+        private static readonly Token mySkip = new Token("SKIP");
 
         private static List<IAtom> GetSubFirst(List<IAtom> body, Dictionary<Rule, HashSet<IAtom>> first)
         {
@@ -71,7 +73,8 @@ namespace ParserGenerator
             }
         }
 
-        private static void CountFollow(Dictionary<Rule, HashSet<IAtom>> first, out Dictionary<Rule, HashSet<IAtom>> follow, HashSet<Rule> rules, Rule start)
+        private static void CountFollow(Dictionary<Rule, HashSet<IAtom>> first, out Dictionary<Rule, HashSet<IAtom>> follow, HashSet<Rule> rules,
+            Rule start)
         {
             follow = rules.ToDictionary(rule => rule, rule => new HashSet<IAtom>());
             follow[start].Add(myEof);
@@ -91,6 +94,7 @@ namespace ParserGenerator
                             {
                                 bodyList.Add(myEps);
                             }
+
                             if (atom.IsRule)
                             {
                                 var atomRule = (Rule) atom;
@@ -100,6 +104,7 @@ namespace ParserGenerator
                                 {
                                     follow[atomRule].UnionWith(follow[rule]);
                                 }
+
                                 tailFirst.Remove(myEps);
                                 follow[atomRule].UnionWith(tailFirst);
                                 var followCountAfter = follow[atomRule].Count;
@@ -111,21 +116,25 @@ namespace ParserGenerator
             }
         }
 
-        private static void Log(Dictionary<Rule, HashSet<IAtom>> toDump, StreamWriter writer, string identifier)
+        private static void Log(Dictionary<Rule, HashSet<IAtom>> toDump, string outputFile, string identifier)
         {
-            writer.WriteLine("currently dumping: " + identifier);
-            writer.WriteLine($"Rules: {toDump.Count}");
-            const string ident = "    ";
-            foreach (var kvp in toDump)
+            outputFile += $".{identifier}.log";
+            using (var writer = File.CreateText(outputFile))
             {
-                var rule = kvp.Key;
-                var set = kvp.Value;
-                writer.WriteLine($"Rule {rule.Name} has {set.Count} elements:");
-                var ind = 0;
-                foreach (var atom in set)
+                writer.WriteLine("currently dumping: " + identifier);
+                writer.WriteLine($"Rules: {toDump.Count}");
+                const string ident = "    ";
+                foreach (var kvp in toDump)
                 {
-                    ind++;
-                    writer.WriteLine(ident + $"{ind}. {atom.Name}");
+                    var rule = kvp.Key;
+                    var set = kvp.Value;
+                    writer.WriteLine($"Rule {rule.Name} has {set.Count} elements:");
+                    var ind = 0;
+                    foreach (var atom in set)
+                    {
+                        ind++;
+                        writer.WriteLine(ident + $"{ind}. {atom.Name}");
+                    }
                 }
             }
         }
@@ -150,14 +159,24 @@ namespace ParserGenerator
 
             using (var writer = File.CreateText(outputFile))
             {
-                //myTODO EPS and SKIP
                 CountFirst(out Dictionary<Rule, HashSet<IAtom>> first, rules);
                 CountFollow(first, out var follow, rules, visitor.start);
-                Log(first, writer, nameof(first));
-                Log(follow, writer, nameof(follow));
-                
-                //6. генерировать
-                //да буду я строить дерево разбора, и на этом дерево разбора будут навешаны атрибуты хуле.
+                Log(first, outputFile, nameof(first));
+                Log(follow, outputFile, nameof(follow));
+                writer.Write("public class Parser{");
+                writer.WriteLine("private readonly Lexer myLexer;");
+                writer.WriteLine("public Parser(Lexer lexer){");
+                writer.WriteLine("myLexer = lexer");
+                writer.WriteLine("}");
+                //1. generate all answer for every rule node 
+                //2. in this answer node place attributes
+                //inherited attribute can be implemened via parameters + indicating order of rules evaluating in actions
+                foreach (var (token, _) in tokens.Tokens)
+                {
+                    
+                    
+                }
+                writer.Write("}");
             }
         }
     }
