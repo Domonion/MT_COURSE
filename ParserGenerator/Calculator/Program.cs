@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Generated;
 
 namespace Main
 {
@@ -61,42 +62,16 @@ namespace Main
                         last.Execute();
                         break;
                     }
-                    case "lexer":
+                    case "calc":
                     {
-                        Console.Write("path to grammar file: ");
-                        var pathToGrammar = Console.ReadLine();
-                        Console.Write("path to lexer: ");
-                        var pathToLexer = Console.ReadLine();
-                        last = new Command(new List<string> {pathToGrammar, pathToLexer}, list =>
+                        Console.Write("Type expression: ");
+                        var expr = Console.ReadLine();
+                        last = new Command(new List<string>{expr}, list =>
                         {
-                            try
-                            {
-                                LexerGenerator.LexerGenerator.GenerateLexer(list[0], list[1]);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
-                            }
-                        });
-                        last.Execute();
-                        break;
-                    }
-                    case "parser":
-                    {
-                        Console.Write("path to grammar file: ");
-                        var pathToGrammar = Console.ReadLine();
-                        Console.Write("path to parser: ");
-                        var pathToParser = Console.ReadLine();
-                        last = new Command(new List<string> {pathToGrammar, pathToParser}, list =>
-                        {
-                            try
-                            {
-                                ParserGenerator.ParserGenerator.GenerateParser(list[0], list[1]);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
-                            }
+                            var lexer = new GeneratedLexer(list[0]);
+                            var parser = new GeneratedParser(lexer);
+                            var res = parser.e();
+                            Console.WriteLine(res.res);
                         });
                         last.Execute();
                         break;

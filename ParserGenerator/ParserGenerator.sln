@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LexerGenerator", "LexerGene
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "Main\Main.csproj", "{DB575CAA-2E75-4DAC-95BD-6CEA96385DA4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator", "Calculator\Calculator.csproj", "{A1791F3B-C8BA-425C-8848-53D5EA920EAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoolFormulas", "BoolFormulas\BoolFormulas.csproj", "{440EFA3D-06E5-4D31-822C-C807DB963FA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{DB575CAA-2E75-4DAC-95BD-6CEA96385DA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB575CAA-2E75-4DAC-95BD-6CEA96385DA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB575CAA-2E75-4DAC-95BD-6CEA96385DA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1791F3B-C8BA-425C-8848-53D5EA920EAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1791F3B-C8BA-425C-8848-53D5EA920EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1791F3B-C8BA-425C-8848-53D5EA920EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1791F3B-C8BA-425C-8848-53D5EA920EAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{440EFA3D-06E5-4D31-822C-C807DB963FA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{440EFA3D-06E5-4D31-822C-C807DB963FA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{440EFA3D-06E5-4D31-822C-C807DB963FA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{440EFA3D-06E5-4D31-822C-C807DB963FA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

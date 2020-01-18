@@ -234,13 +234,17 @@ namespace ParserGenerator
 
                 writer.WriteLine("private Token CurrentToken;");
                 writer.WriteLine("private string CurrentTokenString;");
+                writer.WriteLine("private bool eofOnce = false;");
                 writer.WriteLine("private void Next(){");
                 writer.WriteLine("var next = myLexer.NextToken();");
                 writer.WriteLine("while(next == Token.SKIP){");
                 writer.WriteLine("next = myLexer.NextToken();");
                 writer.WriteLine("}");
                 writer.WriteLine("if(next == Token.EOF){");
+                writer.WriteLine("if(eofOnce){");
                 writer.WriteLine("throw new Exception(\"Lexer has ended.\");");
+                writer.WriteLine("}");
+                writer.WriteLine("eofOnce = true;");
                 writer.WriteLine("}");
                 writer.WriteLine("CurrentToken = next;");
                 writer.WriteLine("CurrentTokenString = myLexer.CurrentString;");
@@ -269,7 +273,6 @@ namespace ParserGenerator
                                 if (atom.IsRule)
                                 {
                                     writer.WriteLine("text.Add(\"\");");
-                                    writer.WriteLine("Next();");
                                     writer.WriteLine("var ret" + ind + " = " + atom.Name + "();");
                                 }
                                 else

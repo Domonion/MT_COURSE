@@ -54,8 +54,8 @@ namespace LexerGenerator
                 foreach (var (name, _) in tokens)
                 {
                     if (name == "EPS" || name == "EOF") throw new Exception($"Token name {name} reserved, choose another name.");
-                    writer.WriteLine("if(" + name + "REGEX.IsMatch(myInput, myIndex)){");
-                    writer.WriteLine("var match = " + name + "REGEX.Match(myInput, myIndex);");
+                    writer.WriteLine("if(" + name + "REGEX.IsMatch(myInput.Substring(myIndex))){");
+                    writer.WriteLine("var match = " + name + "REGEX.Match(myInput.Substring(myIndex));");
                     writer.WriteLine("CurrentString = match.Value;");
                     writer.WriteLine("myIndex += match.Length;");
                     writer.WriteLine("return Token." + name + ";");
