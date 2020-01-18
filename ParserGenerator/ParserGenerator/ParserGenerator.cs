@@ -10,7 +10,6 @@ namespace ParserGenerator
     {
         private static readonly Token myEps = new Token("EPS");
         private static readonly Token myEof = new Token("EOF");
-        private static readonly Token mySkip = new Token("SKIP");
 
         private static List<Token> GetSubFirst(List<IAtom> body, Dictionary<Rule, HashSet<Token>> first)
         {

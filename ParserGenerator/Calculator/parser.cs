@@ -87,7 +87,7 @@ namespace Generated
 
         public eereturn ee()
         {
-            if (Token.PLUS == CurrentToken || false)
+            if (Token.TIERA == CurrentToken || false)
             {
                 var text = new List<string>();
                 var myReturn = new eereturn();
@@ -98,7 +98,14 @@ namespace Generated
                 text.Add("");
                 var ret2 = ee();
                 {
-                    myReturn.res = ret1.res + ret2.res;
+                    if (text[0] == "+")
+                    {
+                        myReturn.res = ret1.res + ret2.res;
+                    }
+                    else
+                    {
+                        myReturn.res = -ret1.res + ret2.res;
+                    }
                 }
                 return myReturn;
             }
@@ -140,7 +147,7 @@ namespace Generated
 
         public ttreturn tt()
         {
-            if (Token.STAR == CurrentToken || false)
+            if (Token.TIERB == CurrentToken || false)
             {
                 var text = new List<string>();
                 var myReturn = new ttreturn();
@@ -151,11 +158,18 @@ namespace Generated
                 text.Add("");
                 var ret2 = tt();
                 {
-                    myReturn.res = ret1.res * ret2.res;
+                    if (text[0] == "*")
+                    {
+                        myReturn.res = ret1.res * ret2.res;
+                    }
+                    else
+                    {
+                        myReturn.res = 1 / ret1.res * ret2.res;
+                    }
                 }
                 return myReturn;
             }
-            else if (Token.EOF == CurrentToken || Token.PLUS == CurrentToken || Token.CLOSE == CurrentToken || false)
+            else if (Token.EOF == CurrentToken || Token.TIERA == CurrentToken || Token.CLOSE == CurrentToken || false)
             {
                 var text = new List<string>();
                 var myReturn = new ttreturn();

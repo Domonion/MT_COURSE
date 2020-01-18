@@ -5,8 +5,8 @@ namespace Generated
 {
     public enum Token
     {
-        PLUS,
-        STAR,
+        TIERA,
+        TIERB,
         NUMBER,
         OPEN,
         CLOSE,
@@ -17,8 +17,8 @@ namespace Generated
     public class GeneratedLexer
     {
         public string CurrentString { get; private set; }
-        private static readonly Regex PLUSREGEX = new Regex("^" + @"\+");
-        private static readonly Regex STARREGEX = new Regex("^" + @"\*");
+        private static readonly Regex TIERAREGEX = new Regex("^" + @"[+|-]");
+        private static readonly Regex TIERBREGEX = new Regex("^" + @"[*|/]");
         private static readonly Regex NUMBERREGEX = new Regex("^" + @"[1-9][0-9]*");
         private static readonly Regex OPENREGEX = new Regex("^" + @"\(");
         private static readonly Regex CLOSEREGEX = new Regex("^" + @"\)");
@@ -33,20 +33,20 @@ namespace Generated
 
         public Token NextToken()
         {
-            if (PLUSREGEX.IsMatch(myInput.Substring(myIndex)))
+            if (TIERAREGEX.IsMatch(myInput.Substring(myIndex)))
             {
-                var match = PLUSREGEX.Match(myInput.Substring(myIndex));
+                var match = TIERAREGEX.Match(myInput.Substring(myIndex));
                 CurrentString = match.Value;
                 myIndex += match.Length;
-                return Token.PLUS;
+                return Token.TIERA;
             }
 
-            if (STARREGEX.IsMatch(myInput.Substring(myIndex)))
+            if (TIERBREGEX.IsMatch(myInput.Substring(myIndex)))
             {
-                var match = STARREGEX.Match(myInput.Substring(myIndex));
+                var match = TIERBREGEX.Match(myInput.Substring(myIndex));
                 CurrentString = match.Value;
                 myIndex += match.Length;
-                return Token.STAR;
+                return Token.TIERB;
             }
 
             if (NUMBERREGEX.IsMatch(myInput.Substring(myIndex)))
