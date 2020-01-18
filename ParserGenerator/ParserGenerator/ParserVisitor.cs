@@ -58,10 +58,14 @@ namespace ParserGenerator
             return this;
         }
 
+        public string AtomRuleAction { get; }
+
         public bool IsRule { get; } = true;
         public string Name { get; }
         public List<Body> Bodies { get; }
         public string Attributes { get; }
+
+        public string InheritAttributes { get; }
 
         public override int GetHashCode()
         {
@@ -73,11 +77,13 @@ namespace ParserGenerator
             return GetHashCode() == obj?.GetHashCode() && Name == (obj as IAtom)?.Name;
         }
 
-        public Rule(string name, List<Body> bodies, string attributes)
+        public Rule(string name, List<Body> bodies, string attributes, string inheritAttributes, string atomRuleAction)
         {
             Name = name;
             Bodies = bodies;
             Attributes = attributes;
+            InheritAttributes = inheritAttributes;
+            AtomRuleAction = atomRuleAction;
         }
     }
 
@@ -109,14 +115,17 @@ namespace ParserGenerator
 
     internal class Unknown : IAtom
     {
-        public Unknown(string name)
+        public Unknown(string name, string atomRuleAction)
         {
             Name = name;
             IsRule = name.ToLower() == name;
+            AtomRuleAction = atomRuleAction;
         }
 
         public bool IsRule { get; }
         public string Name { get; }
+
+        public string AtomRuleAction { get; }
 
         public override int GetHashCode()
         {
@@ -133,7 +142,8 @@ namespace ParserGenerator
             if (!IsRule) return new Token(Name);
             if (Rule.Check(Name, context, out var rule))
             {
-                return rule;
+                return new Rule(rule.Name, rule.Bodies, rule.Attributes, rule.InheritAttributes, AtomRuleAction);
+                //return rule;
             }
 
             throw new Exception("there is no rule " + Name + " in the given context.");
@@ -143,7 +153,6 @@ namespace ParserGenerator
     internal class ParserVisitor : ParserBaseVisitor<List<Body>>
     {
         public readonly HashSet<Rule> Rules = new HashSet<Rule>();
-        public readonly HashSet<Token> Tokens = new HashSet<Token>();
         public Rule Start;
 
         protected override List<Body> AggregateResult(List<Body> aggregate, List<Body> nextResult)
@@ -155,7 +164,7 @@ namespace ParserGenerator
 
         public override List<Body> VisitRule1(ParserParser.Rule1Context context)
         {
-            var currentRule = new Rule(context.RULE_NAME().GetText(), VisitRule_body(context.rule_body()), context.attributes()?.GetText());
+            var currentRule = new Rule(context.RULE_NAME().GetText(), VisitRule_body(context.rule_body()), context.attributes()?.GetText(), context.inher_attributes()?.GetText(), null);
             if (Start == null)
             {
                 Start = currentRule;
@@ -163,12 +172,19 @@ namespace ParserGenerator
             Rules.Add(currentRule);
             return null;
         }
-
+        
         public override List<Body> VisitRule_body(ParserParser.Rule_bodyContext context)
         {
             var bodies = base.VisitRule_body(context);
             var atoms = context.atom().ToList();
-            var atomsList = atoms.Select(atom => new Unknown(atom.GetText())).Cast<IAtom>().ToList();
+            var atomsList = atoms.Select(atom =>
+            {
+                if (atom.RULE_NAME() != null)
+                {
+                    return new Unknown(atom.RULE_NAME().GetText(), atom.ACTION()?.GetText());
+                }
+                return new Unknown(atom.TOKEN_NAME().GetText(), null);
+            }).Cast<IAtom>().ToList();
             var action = context.ACTION()?.GetText();
             return AggregateResult(new List<Body> {new Body(atomsList, action)}, bodies);
         }

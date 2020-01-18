@@ -25,7 +25,7 @@ namespace Generated
         private static readonly Regex NOTREGEX = new Regex("^" + @"!");
         private static readonly Regex OPENREGEX = new Regex("^" + @"\(");
         private static readonly Regex CLOSEREGEX = new Regex("^" + @"\)");
-        private static readonly Regex VARREGEX = new Regex("^" + @"(false|true)");
+        private static readonly Regex VARREGEX = new Regex("^" + @"[a-zA-Z]");
         private static readonly Regex SKIPREGEX = new Regex("^" + @"\s+");
         private readonly string myInput;
         private int myIndex;

@@ -156,6 +156,7 @@ namespace ParserGenerator
             {
                 res += "Token." + token.Name + " == CurrentToken || ";
             }
+
             res += "false";
             return res;
         }
@@ -188,6 +189,20 @@ namespace ParserGenerator
             }
 
             res += "false";
+            return res;
+        }
+
+        private static string CreateInheritAttributes(Rule rule)
+        {
+            if (rule.InheritAttributes == null)
+            {
+                return "()";
+            }
+
+            var res = rule.InheritAttributes;
+            res = res.Replace(":", " ");
+            res = res.Replace(",", "=default,");
+            res = res.Replace(")", "=default)");
             return res;
         }
 
@@ -250,7 +265,7 @@ namespace ParserGenerator
                 writer.WriteLine("}");
                 foreach (var rule in rules)
                 {
-                    writer.WriteLine("public " + rule.Name + "return " + rule.Name + "(){");
+                    writer.WriteLine("public " + rule.Name + "return " + rule.Name + CreateInheritAttributes(rule) + "{");
                     var hasEps = false;
                     Body epsBody = null;
                     foreach (var body in rule.Bodies)
@@ -271,8 +286,19 @@ namespace ParserGenerator
                             {
                                 if (atom.IsRule)
                                 {
+                                    var atomRule = (Rule) atom;
                                     writer.WriteLine("text.Add(\"\");");
-                                    writer.WriteLine("var ret" + ind + " = " + atom.Name + "();");
+                                    if (atomRule.AtomRuleAction == null)
+                                    {
+                                        writer.WriteLine("var ret" + ind + " = " + atom.Name + "();");
+                                    }
+                                    else
+                                    {
+                                        writer.WriteLine(atomRule.Name + "return ret" + ind + " = null;");
+                                        var atomAction = ReplaceAction(atomRule.AtomRuleAction, ind + 1);
+                                        atomAction = atomAction.Replace("$eval", "ret" + ind + " = " + atomRule.Name);
+                                        writer.WriteLine(atomAction);
+                                    }
                                 }
                                 else
                                 {
@@ -318,6 +344,7 @@ namespace ParserGenerator
                                     writer.WriteLine("Next();");
                                 }
                             }
+
                             ind++;
                         }
 

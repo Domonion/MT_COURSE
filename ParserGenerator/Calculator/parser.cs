@@ -73,9 +73,12 @@ namespace Generated
                 text.Add("");
                 var ret0 = t();
                 text.Add("");
-                var ret1 = ee();
+                eereturn ret1 = null;
                 {
-                    myReturn.res = ret0.res + ret1.res;
+                    ret1 = ee(ret0.res);
+                }
+                {
+                    myReturn.res = ret1.res;
                 }
                 return myReturn;
             }
@@ -85,7 +88,7 @@ namespace Generated
             }
         }
 
-        public eereturn ee()
+        public eereturn ee(double res = default)
         {
             if (Token.TIERA == CurrentToken || false)
             {
@@ -96,16 +99,19 @@ namespace Generated
                 text.Add("");
                 var ret1 = t();
                 text.Add("");
-                var ret2 = ee();
+                eereturn ret2 = null;
                 {
                     if (text[0] == "+")
                     {
-                        myReturn.res = ret1.res + ret2.res;
+                        ret2 = ee(res + ret1.res);
                     }
                     else
                     {
-                        myReturn.res = -ret1.res + ret2.res;
+                        ret2 = ee(res - ret1.res);
                     }
+                }
+                {
+                    myReturn.res = ret2.res;
                 }
                 return myReturn;
             }
@@ -114,7 +120,7 @@ namespace Generated
                 var text = new List<string>();
                 var myReturn = new eereturn();
                 {
-                    myReturn.res = 0;
+                    myReturn.res = res;
                 }
                 return myReturn;
             }
@@ -133,9 +139,12 @@ namespace Generated
                 text.Add("");
                 var ret0 = f();
                 text.Add("");
-                var ret1 = tt();
+                ttreturn ret1 = null;
                 {
-                    myReturn.res = ret0.res * ret1.res;
+                    ret1 = tt(ret0.res);
+                }
+                {
+                    myReturn.res = ret1.res;
                 }
                 return myReturn;
             }
@@ -145,7 +154,7 @@ namespace Generated
             }
         }
 
-        public ttreturn tt()
+        public ttreturn tt(double res = default)
         {
             if (Token.TIERB == CurrentToken || false)
             {
@@ -156,16 +165,19 @@ namespace Generated
                 text.Add("");
                 var ret1 = f();
                 text.Add("");
-                var ret2 = tt();
+                ttreturn ret2 = null;
                 {
                     if (text[0] == "*")
                     {
-                        myReturn.res = ret1.res * ret2.res;
+                        ret2 = tt(res * ret1.res);
                     }
                     else
                     {
-                        myReturn.res = 1 / ret1.res * ret2.res;
+                        ret2 = tt(res / ret1.res);
                     }
+                }
+                {
+                    myReturn.res = ret2.res;
                 }
                 return myReturn;
             }
@@ -174,7 +186,7 @@ namespace Generated
                 var text = new List<string>();
                 var myReturn = new ttreturn();
                 {
-                    myReturn.res = 1;
+                    myReturn.res = res;
                 }
                 return myReturn;
             }
